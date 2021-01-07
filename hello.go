@@ -5,6 +5,9 @@ import ("fmt"
 		)
 
 func main(){
+	var s int;
+	s++
+	fmt.Println("s is",s)
 	fmt.Println("exercise 1")
 	
 	/*Modify the echo program to also print os.Args[0], the name of the command that invoked it.*/
