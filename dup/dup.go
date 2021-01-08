@@ -3,10 +3,12 @@ import (
 	"fmt"
 	"os"
 	"bufio"
+	"math/rand"
 )
 
 func main(){
 	fmt.Println("running")
+	fmt.Println(rand.Float64() * 3.0)
 	exercise1()
 }
 
