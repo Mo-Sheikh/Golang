@@ -1,0 +1,43 @@
+package main
+import (
+	"fmt"
+	"time"
+	"io/ioutil"
+	"io"
+	"os"
+	"net/http"
+)
+
+func main(){
+	start := time.Now()
+	ch := make(chan string)
+	for _, url := range os.Args[1:]{
+		go fetch(url, ch)
+	}
+	for range os.Args[1:]{
+		fmt.Println(<-ch)
+	}
+	fmt.Printf("%.2fs elapased \n", time.Since(start).Seconds())
+}
+func fetch(url string, ch chan <- string){
+	start := time.Now()
+	resp, err := http.Get(url)
+	f, err := os.Create("temp.txt")
+	b, err := ioutil.ReadAll(resp.Body)
+	f.WriteString(string(b))
+	f.Close()
+
+
+	if err != nil{
+		ch <- fmt.Sprint(err)
+		return
+	}
+	nbytes, err := io.Copy(ioutil.Discard, resp.Body)
+	if err != nil{
+		ch <- fmt.Sprintf("error while reading %s: %v", url, err)
+		return
+	}
+	secs:= time.Since(start).Seconds()
+	ch <- fmt.Sprintf("%.2fs %7d %s", secs, nbytes, url)
+
+}
